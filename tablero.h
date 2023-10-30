@@ -4,7 +4,6 @@
 #include <iostream>
 using namespace std;
 
-
 class tablero{
 private:
     int n,cantidad_v,cantidad_h,cantidad_d;
@@ -14,9 +13,9 @@ private:
     //int *posiciones_diagonales=new int[cantidad_d];
 public:
     tablero(int dimension);
+    void valores_iniciales_matriz();
     void liberar_memoria_heap();
     void impimir_tablero();
-    void setN(int newN);
 };
 
 #endif // TABLERO_H

@@ -4,7 +4,9 @@ using namespace std;
 
 int main()
 {
-    tablero tablero1(8);
+    int dimension=8;
+    tablero tablero1(dimension);
+    tablero1.valores_iniciales_matriz();
     tablero1.impimir_tablero();
     tablero1.liberar_memoria_heap();
 
