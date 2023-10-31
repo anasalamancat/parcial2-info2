@@ -6,6 +6,9 @@ tablero::tablero(int dimension)
     for(int i=0;i<n;i++){
         matriz[i]=new int[n];
     }
+    posiciones_diagonales=0;
+    posiciones_horizontales=0;
+    posiciones_verticales=0;
 }
 
 void tablero::valores_iniciales_matriz()
@@ -29,16 +32,12 @@ void tablero::valores_iniciales_matriz()
         }
     }
 }
-
 void tablero::liberar_memoria_heap()
 {
     for(int i=0;i<n;i++){
         delete [] matriz[i];
     }
     delete[] matriz;
-    //delete[] posiciones_diagonales;
-    //delete[] posiciones_horizontales;
-    //delete[] posiciones_verticales;
 }
 
 void tablero::impimir_tablero()
@@ -64,6 +63,51 @@ void tablero::impimir_tablero()
         }
         cout<<endl;
     }
+}
+
+void tablero::imprimir_posibles_jugadas()
+{
+    posiciones_diagonales=12345670;
+    posiciones_horizontales=56345621;
+
+    int analizar=0;
+    string nombres_columnas="ABCDEFGHIJLKLMNOPQRSTUVWXYZ";
+    if(posiciones_diagonales==0 && posiciones_horizontales==0 && posiciones_verticales==0){
+        cout<<"\n*NO TIENE POSIBILIDAD DE JUEGO EN ESTE TURNO*";
+    }
+    else{
+        cout<<"JUGADAS POBIBLES:\n";
+        while(posiciones_diagonales!=0){
+            analizar=posiciones_diagonales%10;
+            cout<<endl<<nombres_columnas[analizar];
+            posiciones_diagonales=posiciones_diagonales/10;
+            cout<<posiciones_diagonales%10;
+            posiciones_diagonales=posiciones_diagonales/10;
+        }
+        while(posiciones_verticales!=0){
+            analizar=posiciones_verticales%10;
+            cout<<endl<<nombres_columnas[analizar];
+            posiciones_verticales=posiciones_verticales/10;
+            cout<<posiciones_verticales%10;
+            posiciones_verticales=posiciones_verticales/10;
+        }
+        while(posiciones_horizontales!=0){
+            analizar=posiciones_horizontales%10;
+            cout<<endl<<nombres_columnas[analizar];
+            posiciones_horizontales=posiciones_horizontales/10;
+            cout<<posiciones_horizontales%10;
+            posiciones_horizontales=posiciones_horizontales/10;
+        }
+        cout<<endl;
+    }
+
+}
+
+void tablero::reiniciar_valores_posiciones()
+{
+    posiciones_diagonales=0;
+    posiciones_horizontales=0;
+    posiciones_verticales=0;
 }
 
 
