@@ -6,9 +6,89 @@ tablero::tablero(int dimension)
     for(int i=0;i<n;i++){
         matriz[i]=new int[n];
     }
-    posiciones_diagonales=0;
-    posiciones_horizontales=0;
-    posiciones_verticales=0;
+    for(int k=0;k<n;k++){
+        posiciones_juego[k]=new bool[n];
+    }
+}
+
+void tablero::reiniciar_valores_posiciones_juego()
+{
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            posiciones_juego[i][j]=false;
+        }
+    }
+}
+
+void tablero::posiciones_posibles(int turno)
+/*
+ Input: Recibe como parámetro un número entero (1 o 2) que hace referencia al jugador en juego.
+ Return: Vacía. Cambia valores de la matriz booleana internamente sin necesidad de retorno
+
+ La función recorre la matriz que tiene almacenada la distribución de las fichas, por cada
+ posición, analiza las 8 casillas/posiciones vecinas a ella. Si en esa posición vecina
+ está almacenado el valor del oponente, analiza la posición siguiente a esta hasta encontrar un
+ espacio vacío (representado por un 0). Cuando se encuetre la posición que almacena el numero 0,
+ se cambiará esa misma posición en la matriz booleana asignando un valor True que indica que esa
+ poscición en una jugada posible.
+
+ */
+{
+    int proximas[8][2]={{-1,-1},{-1,0},{-1,1},{0,1},{1,1},{1,0},{1,-1},{0,-1}};
+    int contrario=0,cont,pos_filas,pos_columnas;
+    bool pos_vacia;
+    if(turno==1){contrario=2;}
+    if(turno==2){contrario=1;}
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(matriz[i][j]==turno){
+                cont=0;
+                while(cont<8){
+                    pos_filas=i+proximas[cont][0];
+                    pos_columnas=j+proximas[cont][1];
+                    if(matriz[pos_filas][pos_columnas]==contrario){
+                        pos_vacia=false;
+                        while(pos_vacia==false){
+                        pos_filas+=proximas[cont][0];
+                        pos_columnas+=proximas[cont][1];
+                        if(matriz[pos_filas][pos_columnas]==0){
+                            posiciones_juego[pos_filas][pos_columnas]=true;
+                            pos_vacia=true;
+                        }
+                        }
+                    }
+                    cont++;
+                }
+            }
+        }
+    }
+}
+
+void tablero::imprimir_jugadas_posibles()
+{
+    string columnas="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    cout<<"\n-----POSIBLES JUGADAS----\n";
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(posiciones_juego[i][j]==true){
+                cout<<columnas[j]<<i+1<<endl;
+            }
+        }
+    }
+    cout<<"-------------------------";
+}
+
+bool tablero::verificar_existencia_jugadas()
+{
+    bool existe=false;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(posiciones_juego[i][j]==true){
+                existe=true;
+            }
+        }
+    }
+    return existe;
 }
 
 void tablero::valores_iniciales_matriz()
@@ -32,24 +112,18 @@ void tablero::valores_iniciales_matriz()
         }
     }
 }
-void tablero::liberar_memoria_heap()
-{
-    for(int i=0;i<n;i++){
-        delete [] matriz[i];
-    }
-    delete[] matriz;
-}
 
 void tablero::impimir_tablero()
 {
     string nombres_columnas="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    cout<<"JUGADOR 1 -> o\nJUGADOR 2 -> +\n\n";
     cout<<" ";
     for(int k=0;k<n;k++){
         cout<<"  "<<nombres_columnas[k];
     }
     cout<<endl;
     for(int i=0;i<n;i++){
-        cout<<i<<" ";
+        cout<<i+1<<" ";
         for(int j=0;j<n;j++){
         if(matriz[i][j]==0){
             cout<<" - ";
@@ -64,50 +138,15 @@ void tablero::impimir_tablero()
         cout<<endl;
     }
 }
-
-void tablero::imprimir_posibles_jugadas()
+void tablero::liberar_memoria_heap()
 {
-    posiciones_diagonales=12345670;
-    posiciones_horizontales=56345621;
-
-    int analizar=0;
-    string nombres_columnas="ABCDEFGHIJLKLMNOPQRSTUVWXYZ";
-    if(posiciones_diagonales==0 && posiciones_horizontales==0 && posiciones_verticales==0){
-        cout<<"\n*NO TIENE POSIBILIDAD DE JUEGO EN ESTE TURNO*";
+    for(int i=0;i<n;i++){
+        delete [] matriz[i];
+        delete [] posiciones_juego[i];
     }
-    else{
-        cout<<"JUGADAS POBIBLES:\n";
-        while(posiciones_diagonales!=0){
-            analizar=posiciones_diagonales%10;
-            cout<<endl<<nombres_columnas[analizar];
-            posiciones_diagonales=posiciones_diagonales/10;
-            cout<<posiciones_diagonales%10;
-            posiciones_diagonales=posiciones_diagonales/10;
-        }
-        while(posiciones_verticales!=0){
-            analizar=posiciones_verticales%10;
-            cout<<endl<<nombres_columnas[analizar];
-            posiciones_verticales=posiciones_verticales/10;
-            cout<<posiciones_verticales%10;
-            posiciones_verticales=posiciones_verticales/10;
-        }
-        while(posiciones_horizontales!=0){
-            analizar=posiciones_horizontales%10;
-            cout<<endl<<nombres_columnas[analizar];
-            posiciones_horizontales=posiciones_horizontales/10;
-            cout<<posiciones_horizontales%10;
-            posiciones_horizontales=posiciones_horizontales/10;
-        }
-        cout<<endl;
-    }
-
+    delete[] matriz;
+    delete[] posiciones_juego;
 }
 
-void tablero::reiniciar_valores_posiciones()
-{
-    posiciones_diagonales=0;
-    posiciones_horizontales=0;
-    posiciones_verticales=0;
-}
 
 
