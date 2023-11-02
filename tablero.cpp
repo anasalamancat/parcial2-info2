@@ -1,6 +1,11 @@
 #include "tablero.h"
 
 tablero::tablero(int dimension)
+/*
+ Función del constructor
+ Inicializa las matrices dinámicas y establece la dimensión del
+ tablero(n) según se ingrese en la ejecución.
+ */
 {
     n=dimension;
     for(int i=0;i<n;i++){
@@ -12,6 +17,8 @@ tablero::tablero(int dimension)
 }
 
 void tablero::reiniciar_valores_posiciones_juego()
+/*establece un valor false a cada posición de la matriz booleana.
+ Se usa para dar los valores iniciales y para actualizar después de cada turno*/
 {
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
@@ -22,7 +29,7 @@ void tablero::reiniciar_valores_posiciones_juego()
 
 void tablero::posiciones_posibles(int turno)
 /*
- Input: Recibe como parámetro un número entero (1 o 2) que hace referencia al jugador en juego.
+ parámetros: Número entero (1 o 2) que hace referencia al jugador en turno.
  Return: Vacía. Cambia valores de la matriz booleana internamente sin necesidad de retorno
 
  La función recorre la matriz que tiene almacenada la distribución de las fichas, por cada
@@ -65,6 +72,10 @@ void tablero::posiciones_posibles(int turno)
 }
 
 void tablero::imprimir_jugadas_posibles()
+/*Recorre la matriz booleana. Se imprimen las posiciones con valor true.
+ Para las columnas se imprime la letra del abecedario que se encuentre
+ en la misma posición para hacerlo más amigable y entendible para el jugador
+ */
 {
     string columnas="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     cout<<"\n-----POSIBLES JUGADAS----\n";
@@ -79,6 +90,10 @@ void tablero::imprimir_jugadas_posibles()
 }
 
 bool tablero::verificar_existencia_jugadas()
+/*return: dato tipo Bool.  retorna true si encuentra alguna posicion con valor true,
+ de lo contrario, retorna false
+ Si y solo si este método retorna true, se ejecuta el método "imprimir_jugadas_posibles"
+*/
 {
     bool existe=false;
     for(int i=0;i<n;i++){
@@ -88,6 +103,7 @@ bool tablero::verificar_existencia_jugadas()
             }
         }
     }
+    if(existe==false){cout<<"\n*NO TIENE JUGADAS POSIBLES EN ESTE TURNO*\n";}
     return existe;
 }
 
