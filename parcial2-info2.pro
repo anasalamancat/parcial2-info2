@@ -4,10 +4,10 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-        auxiliares.cpp \
+        juego.cpp \
         main.cpp \
         tablero.cpp
 
 HEADERS += \
-    auxiliares.h \
+    juego.h \
     tablero.h

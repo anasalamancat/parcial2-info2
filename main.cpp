@@ -1,19 +1,11 @@
 #include <iostream>
-#include "tablero.h"
+#include "juego.h"
 using namespace std;
 
 int main()
 {
-    int dimension=8;
-    tablero tablero1(dimension);
-    tablero1.valores_iniciales_matriz();
-    tablero1.reiniciar_valores_posiciones_juego();
-    tablero1.impimir_tablero();
-    tablero1.posiciones_posibles(2);
-    tablero1.imprimir_jugadas_posibles();
-    tablero1.cambio_fichas_encierro(4,0,1);
-    tablero1.impimir_tablero();
-    tablero1.liberar_memoria_heap();
 
+    juego juego1;
+    juego1.iniciar_partida();
     return 0;
 }

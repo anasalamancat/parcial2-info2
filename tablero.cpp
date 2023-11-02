@@ -1,13 +1,17 @@
 #include "tablero.h"
 
-tablero::tablero(int dimension)
+void tablero::setN(int newN)
+{
+    n = newN;
+}
+
+void tablero::tablero_inicializacion()
 /*
  Función del constructor
  Inicializa las matrices dinámicas y establece la dimensión del
  tablero(n) según se ingrese en la ejecución.
  */
 {
-    n=dimension;
     for(int i=0;i<n;i++){
         matriz[i]=new int[n];
     }
@@ -80,7 +84,7 @@ void tablero::imprimir_jugadas_posibles()
  */
 {
     string columnas="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    cout<<"\n-----POSIBLES JUGADAS----\n";
+    cout<<"\nPOSIBLES JUGADAS:\n";
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
             if(posiciones_juego[i][j]==true){
@@ -92,8 +96,8 @@ void tablero::imprimir_jugadas_posibles()
 }
 
 bool tablero::verificar_existencia_jugadas()
-/*return: dato tipo Bool.  retorna true si encuentra alguna posicion con valor true,
- de lo contrario, retorna false
+/*return: dato tipo Bool.  retorna true si encuentra alguna posicion con valor true
+ en la matriz booleana con las posiciones de juego posibles,de lo contrario, retorna false
  Si y solo si este método retorna true, se ejecuta el método "imprimir_jugadas_posibles"
 */
 {
@@ -111,13 +115,14 @@ bool tablero::verificar_existencia_jugadas()
 
 void tablero::cambio_fichas_encierro(int fila_escogida, int columna_escogida, int jugador_en_turno)
 {
-    int contrario=0,cont=0,pos_filas=0,pos_columnas=0,cambio_filas=fila_escogida,cambio_columnas=columna_escogida;
+    int contrario=0,pos_filas=0,pos_columnas=0,cambio_filas=fila_escogida,cambio_columnas=columna_escogida;
     int proximas[8][2]={{-1,-1},{-1,0},{-1,1},{0,1},{1,1},{1,0},{1,-1},{0,-1}};
-    bool extremo_encierro=false;
+    bool extremo_encierro;
     if(jugador_en_turno==1){contrario=2;}
     if(jugador_en_turno==2){contrario=1;}
     matriz[fila_escogida][columna_escogida]=jugador_en_turno;
     for(int cont=0;cont<8;cont++){
+        extremo_encierro=false;
         pos_filas=fila_escogida+proximas[cont][0];
         pos_columnas=columna_escogida+proximas[cont][1];
         if(pos_filas>=0 && pos_columnas>=0 && pos_filas<n && pos_columnas<n){
@@ -125,7 +130,10 @@ void tablero::cambio_fichas_encierro(int fila_escogida, int columna_escogida, in
                 while(extremo_encierro==false){
                     pos_filas+=proximas[cont][0];
                     pos_columnas+=proximas[cont][1];
-                    if(matriz[pos_filas][pos_columnas]==jugador_en_turno){
+                    if(matriz[pos_filas][cambio_columnas]==0){
+                        extremo_encierro=true;
+                    }
+                    else if(matriz[pos_filas][pos_columnas]==jugador_en_turno){
                         while(cambio_filas!=pos_filas || cambio_columnas!=pos_columnas){
                             matriz[cambio_filas][cambio_columnas]=jugador_en_turno;
                             cambio_filas+=proximas[cont][0];
@@ -136,16 +144,14 @@ void tablero::cambio_fichas_encierro(int fila_escogida, int columna_escogida, in
                     else if(pos_filas<0 || pos_filas>=n){
                         while(cambio_filas!=0 || cambio_filas!=n-1){
                             matriz[cambio_filas][cambio_columnas]=jugador_en_turno;
-                            cambio_filas+=proximas[cont][0];
-                            cambio_columnas+=proximas[cont][1];
+                            cambio_filas+=proximas[cont][0],cambio_columnas+=proximas[cont][1];
                         }
                         extremo_encierro=true;
                     }
                     else if(pos_columnas<0 || pos_columnas >=n){
                         while(cambio_columnas!=0 || cambio_columnas!=n-1){
                             matriz[cambio_filas][cambio_columnas]=jugador_en_turno;
-                            cambio_filas+=proximas[cont][0];
-                            cambio_columnas+=proximas[cont][1];
+                            cambio_filas+=proximas[cont][0],cambio_columnas+=proximas[cont][1];
                         }
                         extremo_encierro=true;
                     }
@@ -153,7 +159,6 @@ void tablero::cambio_fichas_encierro(int fila_escogida, int columna_escogida, in
             }
         }
     }
-
 }
 
 void tablero::valores_iniciales_matriz()
@@ -177,18 +182,12 @@ void tablero::valores_iniciales_matriz()
             }
         }
     }
-    matriz[0][0]=1;
-    matriz[2][6]=2;
-    matriz[3][7]=2;
-    matriz[1][1]=1;
-    matriz[4][1]=2;
-    matriz[4][2]=2;
 }
 
 void tablero::impimir_tablero()
 {
     string nombres_columnas="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    cout<<"JUGADOR 1 -> o\nJUGADOR 2 -> +\n\n";
+    cout<<"\n\nJugador 1-> o\nJugador 2-> +\n";
     cout<<" ";
     for(int k=0;k<n;k++){
         cout<<"  "<<nombres_columnas[k];
@@ -210,6 +209,31 @@ void tablero::impimir_tablero()
         cout<<endl;
     }
 }
+
+int tablero::numfichas(int jugador)
+{
+    int conteo=0;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(matriz[i][j]==jugador){
+                conteo++;
+            }
+        }
+    }
+    return conteo;
+}
+
+
+bool tablero::verificar_jugada_ingresada(int numfila, int numcolumna)
+{
+    bool correcta=false;
+    if(posiciones_juego[numfila][numcolumna]==true){
+        correcta=true;
+    }
+    return correcta;
+}
+
+
 void tablero::liberar_memoria_heap()
 {
     for(int i=0;i<n;i++){
@@ -219,6 +243,4 @@ void tablero::liberar_memoria_heap()
     delete[] matriz;
     delete[] posiciones_juego;
 }
-
-
 
