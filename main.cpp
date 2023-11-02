@@ -11,6 +11,8 @@ int main()
     tablero1.impimir_tablero();
     tablero1.posiciones_posibles(2);
     tablero1.imprimir_jugadas_posibles();
+    tablero1.cambio_fichas_encierro(4,0,1);
+    tablero1.impimir_tablero();
     tablero1.liberar_memoria_heap();
 
     return 0;

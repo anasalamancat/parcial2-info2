@@ -29,15 +29,15 @@ void tablero::reiniciar_valores_posiciones_juego()
 
 void tablero::posiciones_posibles(int turno)
 /*
- parámetros: Número entero (1 o 2) que hace referencia al jugador en turno.
+ Parámetros: Número entero (1 o 2) que hace referencia al jugador en turno.
  Return: Vacía. Cambia valores de la matriz booleana internamente sin necesidad de retorno
 
  La función recorre la matriz que tiene almacenada la distribución de las fichas, por cada
- posición, analiza las 8 casillas/posiciones vecinas a ella. Si en esa posición vecina
- está almacenado el valor del oponente, analiza la posición siguiente a esta hasta encontrar un
- espacio vacío (representado por un 0). Cuando se encuetre la posición que almacena el numero 0,
- se cambiará esa misma posición en la matriz booleana asignando un valor True que indica que esa
- poscición en una jugada posible.
+ posición, analiza las 8 casillas/posiciones vecinas. Si en esa posición vecina
+ está almacenado el valor del oponente, analiza la posición siguiente a esta en la misma dirección
+ hasta encontrar un espacio vacío (representado por un 0). Cuando se encuetre la posición
+ que almacena el numero 0, se cambiará esa misma posición en la matriz booleana asignando un
+ valor True que indica que esa poscición en una jugada posible.
 
  */
 {
@@ -53,15 +53,17 @@ void tablero::posiciones_posibles(int turno)
                 while(cont<8){
                     pos_filas=i+proximas[cont][0];
                     pos_columnas=j+proximas[cont][1];
-                    if(matriz[pos_filas][pos_columnas]==contrario){
-                        pos_vacia=false;
-                        while(pos_vacia==false){
-                        pos_filas+=proximas[cont][0];
-                        pos_columnas+=proximas[cont][1];
-                        if(matriz[pos_filas][pos_columnas]==0){
-                            posiciones_juego[pos_filas][pos_columnas]=true;
-                            pos_vacia=true;
-                        }
+                    if(pos_filas>=0 && pos_columnas>=0){
+                        if(matriz[pos_filas][pos_columnas]==contrario){
+                            pos_vacia=false;
+                            while(pos_vacia==false){
+                            pos_filas+=proximas[cont][0];
+                            pos_columnas+=proximas[cont][1];
+                            if(matriz[pos_filas][pos_columnas]==0){
+                                posiciones_juego[pos_filas][pos_columnas]=true;
+                                pos_vacia=true;
+                            }
+                            }
                         }
                     }
                     cont++;
@@ -107,7 +109,55 @@ bool tablero::verificar_existencia_jugadas()
     return existe;
 }
 
+void tablero::cambio_fichas_encierro(int fila_escogida, int columna_escogida, int jugador_en_turno)
+{
+    int contrario=0,cont=0,pos_filas=0,pos_columnas=0,cambio_filas=fila_escogida,cambio_columnas=columna_escogida;
+    int proximas[8][2]={{-1,-1},{-1,0},{-1,1},{0,1},{1,1},{1,0},{1,-1},{0,-1}};
+    bool extremo_encierro=false;
+    if(jugador_en_turno==1){contrario=2;}
+    if(jugador_en_turno==2){contrario=1;}
+    matriz[fila_escogida][columna_escogida]=jugador_en_turno;
+    for(int cont=0;cont<8;cont++){
+        pos_filas=fila_escogida+proximas[cont][0];
+        pos_columnas=columna_escogida+proximas[cont][1];
+        if(pos_filas>=0 && pos_columnas>=0 && pos_filas<n && pos_columnas<n){
+            if(matriz[pos_filas][pos_columnas]==contrario){
+                while(extremo_encierro==false){
+                    pos_filas+=proximas[cont][0];
+                    pos_columnas+=proximas[cont][1];
+                    if(matriz[pos_filas][pos_columnas]==jugador_en_turno){
+                        while(cambio_filas!=pos_filas || cambio_columnas!=pos_columnas){
+                            matriz[cambio_filas][cambio_columnas]=jugador_en_turno;
+                            cambio_filas+=proximas[cont][0];
+                            cambio_columnas+=proximas[cont][1];
+                        }
+                        extremo_encierro=true;
+                    }
+                    else if(pos_filas<0 || pos_filas>=n){
+                        while(cambio_filas!=0 || cambio_filas!=n-1){
+                            matriz[cambio_filas][cambio_columnas]=jugador_en_turno;
+                            cambio_filas+=proximas[cont][0];
+                            cambio_columnas+=proximas[cont][1];
+                        }
+                        extremo_encierro=true;
+                    }
+                    else if(pos_columnas<0 || pos_columnas >=n){
+                        while(cambio_columnas!=0 || cambio_columnas!=n-1){
+                            matriz[cambio_filas][cambio_columnas]=jugador_en_turno;
+                            cambio_filas+=proximas[cont][0];
+                            cambio_columnas+=proximas[cont][1];
+                        }
+                        extremo_encierro=true;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
 void tablero::valores_iniciales_matriz()
+//Establece los valores con que empieza la partida en la matriz de enteros.
 {
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
@@ -127,6 +177,12 @@ void tablero::valores_iniciales_matriz()
             }
         }
     }
+    matriz[0][0]=1;
+    matriz[2][6]=2;
+    matriz[3][7]=2;
+    matriz[1][1]=1;
+    matriz[4][1]=2;
+    matriz[4][2]=2;
 }
 
 void tablero::impimir_tablero()
