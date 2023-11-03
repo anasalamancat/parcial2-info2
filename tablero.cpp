@@ -57,14 +57,17 @@ void tablero::posiciones_posibles(int turno)
                 while(cont<8){
                     pos_filas=i+proximas[cont][0];
                     pos_columnas=j+proximas[cont][1];
-                    if(pos_filas>=0 && pos_columnas>=0){
+                    if(pos_filas>=0 && pos_columnas>=0 && pos_filas<n && pos_columnas<n){
                         if(matriz[pos_filas][pos_columnas]==contrario){
                             pos_vacia=false;
-                            while(pos_vacia==false){
+                            while(pos_vacia==false && pos_filas>0 && pos_columnas>0 && pos_filas<n && pos_columnas<n){
                             pos_filas+=proximas[cont][0];
                             pos_columnas+=proximas[cont][1];
                             if(matriz[pos_filas][pos_columnas]==0){
                                 posiciones_juego[pos_filas][pos_columnas]=true;
+                                pos_vacia=true;
+                            }
+                            else if(matriz[pos_filas][pos_columnas]==turno){
                                 pos_vacia=true;
                             }
                             }
@@ -113,6 +116,20 @@ bool tablero::verificar_existencia_jugadas()
     return existe;
 }
 
+bool tablero::verificar_tablero_lleno()
+{
+    bool lleno=true;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(matriz[i][j]==0){
+                lleno=false;
+            }
+        }
+    }
+    return lleno;
+}
+
+
 void tablero::cambio_fichas_encierro(int fila_escogida, int columna_escogida, int jugador_en_turno)
 {
     int contrario=0,pos_filas=0,pos_columnas=0,cambio_filas=fila_escogida,cambio_columnas=columna_escogida;
@@ -127,10 +144,10 @@ void tablero::cambio_fichas_encierro(int fila_escogida, int columna_escogida, in
         pos_columnas=columna_escogida+proximas[cont][1];
         if(pos_filas>=0 && pos_columnas>=0 && pos_filas<n && pos_columnas<n){
             if(matriz[pos_filas][pos_columnas]==contrario){
-                while(extremo_encierro==false){
+                while(extremo_encierro==false &&pos_filas>=0 && pos_columnas>=0 && pos_filas<n && pos_columnas<n){
                     pos_filas+=proximas[cont][0];
                     pos_columnas+=proximas[cont][1];
-                    if(matriz[pos_filas][cambio_columnas]==0){
+                    if(matriz[pos_filas][pos_columnas]==0){
                         extremo_encierro=true;
                     }
                     else if(matriz[pos_filas][pos_columnas]==jugador_en_turno){

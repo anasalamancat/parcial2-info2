@@ -17,6 +17,7 @@ public:
     void posiciones_posibles(int turno);
     void imprimir_jugadas_posibles();
     bool verificar_existencia_jugadas();
+    bool verificar_tablero_lleno();
     void cambio_fichas_encierro(int fila_escogida,int columna_escogida,int jugador_en_turno);
     void liberar_memoria_heap();
     bool verificar_jugada_ingresada(int numfila,int numcolumna);
