@@ -17,7 +17,7 @@ void juego::iniciar_partida()
         if(tablero1.verificar_tablero_lleno()==false){
             if(tablero1.verificar_existencia_jugadas()==true){
                 continua_juego=0;
-                cout<<"\nTURNO DEL JUGADOR #"<<turno<<endl;
+                cout<<"\nTURNO DEL JUGADOR #"<<turno<<" - POSIBLES JUGADAS: "<<endl;
                 tablero1.imprimir_jugadas_posibles();
                 jugada_ingresada_correctamente=false;
                 while(jugada_ingresada_correctamente==false){
@@ -36,7 +36,7 @@ void juego::iniciar_partida()
             else{
                 continua_juego++;
                 if(continua_juego==2){
-                    cout<<"\n*SE AGOTARON LAS JUGADAS POSIBLES PARA AMBOS JUGADORES*";
+                    cout<<"\n*SE AGOTARON LAS JUGADAS POSIBLES PARA AMBOS JUGADORES. EL JUEGO HA TERMINADO*\n";
                     ban=false;
                 }
             }
@@ -44,12 +44,11 @@ void juego::iniciar_partida()
             system("cls");
         }
         else{
-            cout<<"\n*EL TABLERO ESTA COMPLETAMENTE LLENO*";
+            cout<<"\n*EL TABLERO ESTA COMPLETAMENTE LLENO. EL JUEGO HA TERMINADO*\n";
             ban=false;
         }
     }
-    cout<<"RECUENTO DE LA PARTIDA:";
-
+    juego_terminado();
 }
 
 
@@ -133,6 +132,7 @@ void juego::juego_terminado()
         cantidad_fichas_ganador=fichasjugador2;
     }
     historico_partida.guardarDatosPartida(jugador1,jugador2,jugadorganador,cantidad_fichas_ganador,64);
+    cout<<"\n ¡FELICIDADES "<<jugadorganador<<" !\nFuiste el ganador con "<<cantidad_fichas_ganador<<" fichas.";
 }
 
 juego::juego()

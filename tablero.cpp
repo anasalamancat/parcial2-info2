@@ -87,7 +87,6 @@ void tablero::imprimir_jugadas_posibles()
  */
 {
     string columnas="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    cout<<"\nPOSIBLES JUGADAS:\n";
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
             if(posiciones_juego[i][j]==true){
@@ -147,7 +146,10 @@ void tablero::cambio_fichas_encierro(int fila_escogida, int columna_escogida, in
                 while(extremo_encierro==false &&pos_filas>=0 && pos_columnas>=0 && pos_filas<n && pos_columnas<n){
                     pos_filas+=proximas[cont][0];
                     pos_columnas+=proximas[cont][1];
-                    if(matriz[pos_filas][pos_columnas]==0){
+                    if(pos_filas<0 || pos_filas==n || pos_columnas<0 || pos_columnas==n){
+                        extremo_encierro=true;
+                    }
+                    else if(matriz[pos_filas][pos_columnas]==0){
                         extremo_encierro=true;
                     }
                     else if(matriz[pos_filas][pos_columnas]==jugador_en_turno){
@@ -156,9 +158,6 @@ void tablero::cambio_fichas_encierro(int fila_escogida, int columna_escogida, in
                             cambio_filas+=proximas[cont][0];
                             cambio_columnas+=proximas[cont][1];
                         }
-                        extremo_encierro=true;
-                    }
-                    else if(pos_filas<0 || pos_filas==n || pos_columnas<0 || pos_columnas==n){
                         extremo_encierro=true;
                     }
                 }
