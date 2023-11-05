@@ -129,10 +129,9 @@ bool tablero::verificar_tablero_lleno()
     return lleno;
 }
 
-
 void tablero::cambio_fichas_encierro(int fila_escogida, int columna_escogida, int jugador_en_turno)
 {
-    int contrario=0,pos_filas=0,pos_columnas=0,cambio_filas=fila_escogida,cambio_columnas=columna_escogida;
+    int contrario=0,pos_filas=0,pos_columnas=0,cambio_filas,cambio_columnas;
     int proximas[8][2]={{-1,-1},{-1,0},{-1,1},{0,1},{1,1},{1,0},{1,-1},{0,-1}};
     bool extremo_encierro;
     if(jugador_en_turno==1){contrario=2;}
@@ -142,6 +141,8 @@ void tablero::cambio_fichas_encierro(int fila_escogida, int columna_escogida, in
         extremo_encierro=false;
         pos_filas=fila_escogida+proximas[cont][0];
         pos_columnas=columna_escogida+proximas[cont][1];
+        cambio_filas=fila_escogida;
+        cambio_columnas=columna_escogida;
         if(pos_filas>=0 && pos_columnas>=0 && pos_filas<n && pos_columnas<n){
             if(matriz[pos_filas][pos_columnas]==contrario){
                 while(extremo_encierro==false &&pos_filas>=0 && pos_columnas>=0 && pos_filas<n && pos_columnas<n){
@@ -204,7 +205,7 @@ void tablero::valores_iniciales_matriz()
 void tablero::impimir_tablero()
 {
     string nombres_columnas="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    cout<<"\n\nJugador 1-> o\nJugador 2-> +\n";
+    cout<<"\n\JUGADOR 1: o\nJUGADOR 2: +\n\n";
     cout<<" ";
     for(int k=0;k<n;k++){
         cout<<"  "<<nombres_columnas[k];
