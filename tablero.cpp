@@ -41,7 +41,7 @@ void tablero::posiciones_posibles(int turno)
  está almacenado el valor del oponente, analiza la posición siguiente a esta en la misma dirección
  hasta encontrar un espacio vacío (representado por un 0). Cuando se encuetre la posición
  que almacena el numero 0, se cambiará esa misma posición en la matriz booleana asignando un
- valor True que indica que esa poscición en una jugada posible.
+ valor True que indica que esa poscición es una jugada posible.
 
  */
 {
@@ -53,31 +53,33 @@ void tablero::posiciones_posibles(int turno)
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
             if(matriz[i][j]==turno){
-                cont=0;
-                while(cont<8){
-                    pos_filas=i+proximas[cont][0];
-                    pos_columnas=j+proximas[cont][1];
-                    if(pos_filas>=0 && pos_columnas>=0 && pos_filas<n && pos_columnas<n){
-                        if(matriz[pos_filas][pos_columnas]==contrario){
-                            pos_vacia=false;
-                            while(pos_vacia==false && pos_filas>0 && pos_columnas>0 && pos_filas<n && pos_columnas<n){
-                            pos_filas+=proximas[cont][0];
-                            pos_columnas+=proximas[cont][1];
-                            if(matriz[pos_filas][pos_columnas]==0){
-                                posiciones_juego[pos_filas][pos_columnas]=true;
-                                pos_vacia=true;
-                            }
-                            else if(matriz[pos_filas][pos_columnas]==turno){
-                                pos_vacia=true;
-                            }
+                for (int cont = 0; cont < 8; cont++) {
+                    int pos_filas = i + proximas[cont][0];
+                    int pos_columnas = j + proximas[cont][1];
+
+                    if (pos_filas >= 0 && pos_columnas >= 0 && pos_filas < n && pos_columnas < n) {
+                        if (matriz[pos_filas][pos_columnas] == contrario) {
+                            pos_vacia = false;
+                            pos_filas += proximas[cont][0];
+                            pos_columnas += proximas[cont][1];
+                            while (!pos_vacia && pos_filas >= 0 && pos_columnas >= 0 && pos_filas < n && pos_columnas < n) {
+                                if (matriz[pos_filas][pos_columnas] == 0) {
+                                    posiciones_juego[pos_filas][pos_columnas] = true;
+                                    pos_vacia = true;
+                                }
+                                else if (matriz[pos_filas][pos_columnas] == turno) {
+                                    pos_vacia = true;
+                                }
+                                pos_filas += proximas[cont][0];
+                                pos_columnas += proximas[cont][1];
                             }
                         }
                     }
-                    cont++;
                 }
             }
         }
     }
+
 }
 
 void tablero::imprimir_jugadas_posibles()
