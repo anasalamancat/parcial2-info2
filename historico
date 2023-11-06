@@ -41,20 +41,38 @@ IMPLEMENTACION DE LOS METODOS DE LA CLASE HISTORICO:
         }
     }
 
-    void historico::guardarDatosPartida(string _jugador1, string _jugador2, string _ganador, int _puntajeGanador, int _totalpuntos){ //los parametros son los datos de la partida que se guardaran en el archivo
-        historicoEscritura << "Fecha: " << fechaHoraActual() << "; " << "Jugadores: " << _jugador1 << " y "
-                           << _jugador2 << "; " << "Ganador: " << _ganador << "; " << "Puntaje con que gano: "
-                           << _puntajeGanador << '/' << _totalpuntos << endl; //el formato en que se guarda la info es el siguiente: fecha, jugadores, ganador y puntaje
-        historicoEscritura.close(); //cerramos el archivo para evitar posibles daños en el archivo
-    }
+    void historico::guardarDatosPartida(string _jugador1, string _jugador2, string _ganador, int _puntajeGanador, int _totalpuntos){
+    /*metodo que tiene como parametros ls datos de la partida
+    (jugadores, ganador, total de puntos) guarda esots datos en un archivo llamado historico.txt
+    los datos se guardan asi: fecha y hora; jugadores; ganador; puntaje*/
+    historicoEscritura << fechaHoraActual() << "; " << _jugador1 << " y " << _jugador2 << "; " << _ganador << "; " << _puntajeGanador << '/' << _totalpuntos << ";" << endl; //el formato en que se guarda la info es el siguiente: fecha, jugadores, ganador y puntaje
+    historicoEscritura.close(); //cerramos el archivo para evitar posibles daños en el archivo
+}
 
     void historico::mostrarHistorico(){
-        string line; //aqui se guardara la informacion leida linea por linea
-        while(getline(historicoLectura, line)){ //el ciclo se ejecuta hasta que llega al final del archivo, la info que va en la linea se toma encuenta hasta llegar al caracter nulo '\0'
-            cout << line << endl; //mostramos la info por consola
-        }
-        historicoLectura.close();//cerramos el archivo para evitar posibles daños en el archivo
+    /*metodo que se encarga de abrir el archivo que contiene el historico de las partidas
+    se crea una estructura para el manejo de los datos, se instancia la clase stringstream para un mejor manejo de datos
+    los datos se muestran en forma de una tabla: primero la fecha y hora, los jugadores, el ganador y el puntaje*/
+    struct datosPartida{
+        string fecha;
+        string jugadores;
+        string ganador;
+        string puntaje;
+    };
+
+    string line;
+    while(getline(historicoLectura, line)){
+        stringstream flujo(line);
+        datosPartida partida;
+
+        getline(flujo, partida.fecha, ';');
+        getline(flujo, partida.jugadores, ';');
+        getline(flujo, partida.ganador, ';');
+        getline(flujo, partida.puntaje, ';');
+        cout << "\n________________________________\nFecha y hora: " << partida.fecha << "\nJugadores:\t" << partida.jugadores << "\nGanador:\t" << partida.ganador << "\nPuntaje:\t" << partida.puntaje << "\n________________________________\n" << endl;
     }
+    historicoLectura.close();//cerramos el archivo para evitar posibles daños en el archivo
+}
 
     string historico::fechaHoraActual(){//funcion para capturar la fecha y la hora actuales del sistema
         time_t actual = time(nullptr); //calcula el tiempo actual en segundos desde el 01/01/1970 la epoca Unix, time(nullptr) obtien la hora actual como un valor de time_t
@@ -84,3 +102,55 @@ MAIN.CPP DONDE SE INSTANCIA LA CLASE Y SE PRUEBA SU FUNCIONAMIENTO
         datos.mostrarHistorico();
     return 0;
     }
+
+
+CORRECCION METODO "POSICIONES_POSIBLES":
+        void tablero::posiciones_posibles(int turno)
+        /*
+         Parámetros: Número entero (1 o 2) que hace referencia al jugador en turno.
+         Return: Vacía. Cambia valores de la matriz booleana internamente sin necesidad de retorno
+        
+         La función recorre la matriz que tiene almacenada la distribución de las fichas, por cada
+         posición, analiza las 8 casillas/posiciones vecinas. Si en esa posición vecina
+         está almacenado el valor del oponente, analiza la posición siguiente a esta en la misma dirección
+         hasta encontrar un espacio vacío (representado por un 0). Cuando se encuetre la posición
+         que almacena el numero 0, se cambiará esa misma posición en la matriz booleana asignando un
+         valor True que indica que esa poscición en una jugada posible.
+        
+         */
+        {
+            int proximas[8][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}};
+            int contrario = (turno == 1) ? 2 : 1;  // Alternativa para determinar el contrario
+            bool pos_vacia;
+        
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (matriz[i][j] == turno) {
+                        for (int cont = 0; cont < 8; cont++) {
+                            int pos_filas = i + proximas[cont][0];
+                            int pos_columnas = j + proximas[cont][1];
+        
+                            if (pos_filas >= 0 && pos_columnas >= 0 && pos_filas < n && pos_columnas < n) {
+                                if (matriz[pos_filas][pos_columnas] == contrario) {
+                                    pos_vacia = false;
+                                    pos_filas += proximas[cont][0];
+                                    pos_columnas += proximas[cont][1];
+        
+                                    while (!pos_vacia && pos_filas >= 0 && pos_columnas >= 0 && pos_filas < n && pos_columnas < n) {
+                                        if (matriz[pos_filas][pos_columnas] == 0) {
+                                            posiciones_juego[pos_filas][pos_columnas] = true;
+                                            pos_vacia = true;
+                                        } else if (matriz[pos_filas][pos_columnas] == turno) {
+                                            pos_vacia = true;
+                                        }
+        
+                                        pos_filas += proximas[cont][0];
+                                        pos_columnas += proximas[cont][1];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }    
+        }
