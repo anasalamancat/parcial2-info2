@@ -3,7 +3,8 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <ctime> //contiene las funcones para capturar la fecha y hora del sistema
+#include <sstream>
+#include <ctime> //contiene las funciones para capturar la fecha y hora del sistema
 using namespace std;
 
 class historico

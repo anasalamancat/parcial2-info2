@@ -10,21 +10,38 @@ historico::historico(){ //contructor, abre los archivos
     }
 }
 
-void historico::guardarDatosPartida(string _jugador1, string _jugador2, string _ganador, int _puntajeGanador, int _totalpuntos){ //los parametros son los datos de la partida que se guardaran en el archivo
-    historicoEscritura << "Fecha: " << fechaHoraActual() << "; " << "Jugadores: " << _jugador1 << " y "
-                       << _jugador2 << "; " << "Ganador: " << _ganador << "; " << "Puntaje con que gano: "
-                       << _puntajeGanador << '/' << _totalpuntos << endl; //el formato en que se guarda la info es el siguiente: fecha, jugadores, ganador y puntaje
+void historico::guardarDatosPartida(string _jugador1, string _jugador2, string _ganador, int _puntajeGanador, int _totalpuntos){
+    /*metodo que tiene como parametros ls datos de la partida
+    (jugadores, ganador, total de puntos) guarda esots datos en un archivo llamado historico.txt
+    los datos se guardan asi: fecha y hora; jugadores; ganador; puntaje*/
+    historicoEscritura << fechaHoraActual() << "; " << _jugador1 << " y " << _jugador2 << "; " << _ganador << "; " << _puntajeGanador << '/' << _totalpuntos << ";" << endl; //el formato en que se guarda la info es el siguiente: fecha, jugadores, ganador y puntaje
     historicoEscritura.close(); //cerramos el archivo para evitar posibles daños en el archivo
 }
 
 void historico::mostrarHistorico(){
-    string line; //guarda la informacion leida linea por linea
-    while(getline(historicoLectura, line)){ //el ciclo se ejecuta hasta que llega al final del archivo, la info que va en la linea se toma encuenta hasta llegar al caracter nulo '\0'
-        cout << line << endl; //mostramos la info por consola
+    /*metodo que se encarga de abrir el archivo que contiene el historico de las partidas
+    se crea una estructura para el manejo de los datos, se instancia la clase stringstream para un mejor manejo de datos
+    los datos se muestran en forma de una tabla: primero la fecha y hora, los jugadores, el ganador y el puntaje*/
+    struct datosPartida{
+        string fecha;
+        string jugadores;
+        string ganador;
+        string puntaje;
+    };
+
+    string line;
+    while(getline(historicoLectura, line)){
+        stringstream flujo(line);
+        datosPartida partida;
+
+        getline(flujo, partida.fecha, ';');
+        getline(flujo, partida.jugadores, ';');
+        getline(flujo, partida.ganador, ';');
+        getline(flujo, partida.puntaje, ';');
+        cout << "\n________________________________\nFecha y hora: " << partida.fecha << "\nJugadores:\t" << partida.jugadores << "\nGanador:\t" << partida.ganador << "\nPuntaje:\t" << partida.puntaje << "\n________________________________\n" << endl;
     }
     historicoLectura.close();//cerramos el archivo para evitar posibles daños en el archivo
 }
-
 string historico::fechaHoraActual(){//funcion para capturar la fecha y la hora actuales del sistema
     time_t actual = time(nullptr); //calcula el tiempo actual en segundos desde el 01/01/1970 la epoca Unix, time(nullptr) obtien la hora actual como un valor de time_t
     tm* local = localtime(&actual); //"localtime" convierte la info de actual en una estrutura "tm", local es un puntero que apunta hacia la estructura

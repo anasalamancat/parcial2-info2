@@ -1,6 +1,7 @@
 #include "tablero.h"
 
 void tablero::setN(int newN)
+//Método para tener acceso al atributo n y darle un valor desde afuera de la clase
 {
     n = newN;
 }
@@ -42,7 +43,6 @@ void tablero::posiciones_posibles(int turno)
  hasta encontrar un espacio vacío (representado por un 0). Cuando se encuetre la posición
  que almacena el numero 0, se cambiará esa misma posición en la matriz booleana asignando un
  valor True que indica que esa poscición es una jugada posible.
-
  */
 {
     int proximas[8][2]={{-1,-1},{-1,0},{-1,1},{0,1},{1,1},{1,0},{1,-1},{0,-1}};
@@ -56,7 +56,6 @@ void tablero::posiciones_posibles(int turno)
                 for (int cont = 0; cont < 8; cont++) {
                     int pos_filas = i + proximas[cont][0];
                     int pos_columnas = j + proximas[cont][1];
-
                     if (pos_filas >= 0 && pos_columnas >= 0 && pos_filas < n && pos_columnas < n) {
                         if (matriz[pos_filas][pos_columnas] == contrario) {
                             pos_vacia = false;
@@ -118,6 +117,12 @@ bool tablero::verificar_existencia_jugadas()
 }
 
 bool tablero::verificar_tablero_lleno()
+/*Recorre la matriz dinámica de enteros buscando posiciones sin fichas (con valor de 0)
+Si encuentra alguna, cambia la variable "lleno" por false indicando que aún no está lleno
+el tablero.
+
+Return: valor bool que tenga almacenado la variable "lleno".
+*/
 {
     bool lleno=true;
     for(int i=0;i<n;i++){
@@ -131,6 +136,14 @@ bool tablero::verificar_tablero_lleno()
 }
 
 void tablero::cambio_fichas_encierro(int fila_escogida, int columna_escogida, int jugador_en_turno)
+/*
+Este método analiza la posición de la matriz(tablero) de juego para cambiar las fichas del oponente por
+las propias en caso de haber realizado un encierro. Recorre las posiciones vecinas mediante operaciones
+almacenadas en el arreglo "proximas", si en esta posición vecina hay una ficha del oponente, se sigue
+recorriendo en esta dirección hasta encontrar ya sea un espacio en blanco, un borde o el otro extremo del
+encierro, si se encuentra el otro extremo del encierro se crea un ciclo para cambiar las fichas intermedias.
+*/
+
 {
     int contrario=0,pos_filas=0,pos_columnas=0,cambio_filas,cambio_columnas;
     int proximas[8][2]={{-1,-1},{-1,0},{-1,1},{0,1},{1,1},{1,0},{1,-1},{0,-1}};
@@ -192,6 +205,8 @@ void tablero::valores_iniciales_matriz()
 }
 
 void tablero::impimir_tablero()
+//Se imprime la matriz de enteros representando el tablero en un formato amigable para el jugador
+
 {
     string nombres_columnas="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     cout<<"\n\JUGADOR 1: o\nJUGADOR 2: +\n\n";
@@ -218,6 +233,11 @@ void tablero::impimir_tablero()
 }
 
 int tablero::numfichas(int jugador)
+/*Recibe un número entero que representa el jugador (1 o 2), Recorre la matriz de enteros con un for
+para llevar un conteo de las veces en que encuentre el número del parámetro, ya que ese es el número de
+fichas que tiene el jugador en el tablero al finalizar la partida.
+*/
+
 {
     int conteo=0;
     for(int i=0;i<n;i++){
@@ -232,6 +252,11 @@ int tablero::numfichas(int jugador)
 
 
 bool tablero::verificar_jugada_ingresada(int numfila, int numcolumna)
+/*Recibe el número de fila y de columna que el jugador ingresó y verifica. Retorna true o false dependiendo de
+si es una jugada posible. Verifica que en la matriz booleana haya un valor de true en la posición ingresada que
+indicaría que si es una jugada posible
+*/
+
 {
     bool correcta=false;
     if(posiciones_juego[numfila][numcolumna]==true){
@@ -242,6 +267,7 @@ bool tablero::verificar_jugada_ingresada(int numfila, int numcolumna)
 
 
 void tablero::liberar_memoria_heap()
+//Se libera la memoria dinámica utilizada tanto para la matriz booleana como para la matriz de enteros
 {
     for(int i=0;i<n;i++){
         delete [] matriz[i];
